@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+    <div class="max-w-md w-full bg-gray-800 p-8 rounded-md shadow-md">
+        <h1 class="text-2xl font-bold text-blue-400 mb-4">Login</h1>
+        <form onsubmit="handleLogin(event)">
+            <label class="block mb-2">Username</label>
+            <input type="text" id="username" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" required>
+            <label class="block mb-2">Password</label>
+            <input type="password" id="password" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" required>
+            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 w-full">Login</button>
+        </form>
+    </div>
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Simple client-side check (Replace with server-side validation for better security)
+            if (username === 'admin' && password === 'yourpassword') {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                alert('Invalid credentials');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,67 +1,55 @@
-// script.js
-const projects = [];
+// Save the resume and portfolio data
+function saveContent() {
+    // Retrieve content from TinyMCE editors
+    const summary = tinymce.get("summary").getContent();
+    const experience = tinymce.get("experience").getContent();
+    const skills = tinymce.get("skills").getContent();
+    const portfolio = tinymce.get("portfolio").getContent();
 
-// Add Project
-function addProject() {
-    const projectTitle = prompt("Project Title:");
-    const projectDesc = prompt("Project Description:");
-    const projectLink = prompt("Project Link:");
-    const newProject = { title: projectTitle, description: projectDesc, link: projectLink, imageUrl: "https://via.placeholder.com/200x150" };
-    projects.push(newProject);
-    displayProjects();
+    // Save data to localStorage
+    const contentData = { summary, experience, skills, portfolio };
+    localStorage.setItem("contentData", JSON.stringify(contentData));
+    alert("Content saved successfully!");
+
+    // Redirect to admin dashboard or main page
+    window.location.href = "admin-dashboard.html";
 }
 
-// Display Projects
-function displayProjects() {
-    const projectList = document.getElementById("project-list");
-    projectList.innerHTML = projects.map(project => `
-        <div class="bg-gray-800 p-4 rounded-md shadow flex">
-            <img src="${project.imageUrl}" alt="Project Image" class="w-32 h-24 mr-4 rounded">
-            <div>
-                <h3 class="text-xl font-bold text-blue-300">${project.title}</h3>
-                <p>${project.description}</p>
-                <a href="${project.link}" target="_blank" class="text-blue-500 hover:text-blue-700">View Project</a>
-            </div>
+// Save new or edited projects
+function saveProject() {
+    const title = tinymce.get("project-title").getContent();
+    const image = tinymce.get("project-image").getContent();
+    const description = tinymce.get("project-description").getContent();
+
+    const projectData = { title, image, description };
+    let projects = JSON.parse(localStorage.getItem("projects")) || [];
+    projects.push(projectData);
+    localStorage.setItem("projects", JSON.stringify(projects));
+    alert("Project saved successfully!");
+    window.location.href = "admin-dashboard.html";
+}
+
+// Load resume and portfolio data onto the index page
+function loadContent() {
+    const savedData = JSON.parse(localStorage.getItem("contentData"));
+    if (savedData) {
+        document.getElementById("resume-content").innerHTML = `
+            <h2 class="text-xl font-bold mb-2 text-blue-400">Summary</h2>${savedData.summary}
+            <h2 class="text-xl font-bold mb-2 text-blue-400">Experience</h2>${savedData.experience}
+            <h2 class="text-xl font-bold mb-2 text-blue-400">Skills</h2>${savedData.skills}
+        `;
+    }
+
+    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    const projectGrid = document.getElementById("portfolio-grid");
+    projectGrid.innerHTML = projects.map(project => `
+        <div class="bg-gray-800 p-4 rounded-md shadow">
+            <h3 class="text-lg font-bold text-blue-300 mb-2">${project.title}</h3>
+            <img src="${project.image}" alt="${project.title}" class="w-full h-32 object-cover mb-2 rounded">
+            <p>${project.description}</p>
         </div>
     `).join("");
 }
 
-// Edit Resume
-function editResume() {
-    const resumeContent = document.getElementById("resume-content");
-    const newContent = prompt("Update your resume content:", resumeContent.textContent);
-    if (newContent) resumeContent.textContent = newContent;
-}
-
-// Initial Render
-displayProjects();
-
-
-function saveResume() {
-    const summary = document.getElementById("summary").value;
-    const experience = document.getElementById("experience").value;
-    const skills = document.getElementById("skills").value;
-
-    // Save data to localStorage
-    const resumeData = { summary, experience, skills };
-    localStorage.setItem("resumeData", JSON.stringify(resumeData));
-    alert("Resume saved successfully!");
-
-    // Optionally, redirect to the main page
-    window.location.href = "index.html";
-}
-
-// Load resume data on the main page
-function loadResume() {
-    const savedData = JSON.parse(localStorage.getItem("resumeData"));
-    if (savedData) {
-        document.getElementById("resume-content").textContent = `
-            Summary: ${savedData.summary}\n
-            Experience: ${savedData.experience}\n
-            Skills: ${savedData.skills}
-        `;
-    }
-}
-
-// Call loadResume on the main page to display the saved content
-document.addEventListener("DOMContentLoaded", loadResume);
+// Call loadContent on the main page to display data
+document.addEventListener("DOMContentLoaded", loadContent);

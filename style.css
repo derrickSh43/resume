@@ -2,3 +2,10 @@
 body {
     font-family: 'Arial', sans-serif;
 }
+background-image {
+    border: 0px solid black;
+    padding: 25px;
+    background: url(background.jpg);
+    background-repeat: no-repeat;
+    background-size: auto;
+  }

@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Resume</title>
+    <title>Edit Resume and Portfolio</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #1a202c; /* Dark background */
             color: white;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         .editor-container {
             max-width: 700px;
@@ -24,9 +28,9 @@
 </head>
 <body>
     <div class="editor-container">
-        <h1 class="text-3xl font-bold text-blue-400 mb-4">Edit Your Resume</h1>
+        <h1 class="text-3xl font-bold text-blue-400 mb-4">Edit Your Resume and Portfolio</h1>
 
-        <!-- Textareas for different resume sections -->
+        <!-- Resume Editing Section -->
         <label class="block mb-2">Summary</label>
         <textarea id="summary" class="w-full mb-4 p-2 rounded">[Add your summary here]</textarea>
 
@@ -36,9 +40,13 @@
         <label class="block mb-2">Skills</label>
         <textarea id="skills" class="w-full mb-4 p-2 rounded">[Add your skills here]</textarea>
 
+        <!-- Portfolio Editing Section -->
+        <label class="block mb-2">Portfolio</label>
+        <textarea id="portfolio" class="w-full mb-4 p-2 rounded">[Add your portfolio projects here]</textarea>
+
         <!-- Save button -->
-        <button onclick="saveResume()" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Save Resume
+        <button onclick="saveContent()" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">
+            Save Content
         </button>
     </div>
 
@@ -57,11 +65,7 @@
         mergetags_list: [
           { value: 'First.Name', title: 'First Name' },
           { value: 'Email', title: 'Email' },
-        ],
-        ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
-        exportpdf_converter_options: { 'format': 'Letter', 'margin_top': '1in', 'margin_right': '1in', 'margin_bottom': '1in', 'margin_left': '1in' },
-        exportword_converter_options: { 'document': { 'size': 'Letter' } },
-        importword_converter_options: { 'formatting': { 'styles': 'inline', 'resets': 'inline',	'defaults': 'inline', } },
+        ]
       });
     </script>
 
