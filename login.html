@@ -40,11 +40,11 @@
         Amplify.configure({
             Auth: {
                 region: 'us-east-1', // Replace with your AWS region
-                userPoolId: '<your-cognito-user-pool-id>', // Replace with your Cognito User Pool ID
-                userPoolWebClientId: '<your-cognito-user-pool-client-id>', // Replace with your User Pool Client ID
-                identityPoolId: '<your-cognito-identity-pool-id>', // Replace with your Identity Pool ID
+                userPoolId: 'us-east-1_91ty2Mu0Q', // Replace with your Cognito User Pool ID
+                userPoolWebClientId: '6s2ql3g8ddne8j46janh1a768q', // Replace with your User Pool Client ID
+                identityPoolId: 'us-east-1:8a251cbd-3ab7-4996-8cea-13600df8a4a7', // Replace with your Identity Pool ID
                 oauth: {
-                    domain: 'your-cognito-domain.auth.us-east-1.amazoncognito.com', // Replace with your Cognito domain
+                    domain: 'https://derrick-weil.auth.us-east-1.amazoncognito.com', // Replace with your Cognito domain
                     scope: ['openid', 'email', 'profile'],
                     redirectSignIn: 'https://derrick-weil.com/callback', // Your allowed callback URL
                     redirectSignOut: 'https://derrick-weil.com/',
