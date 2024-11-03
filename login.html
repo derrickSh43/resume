@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-amplify/4.3.21/aws-amplify.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x/firebase-auth.js"></script>
     <style>
         body {
             background-color: #1a202c;
@@ -27,8 +28,8 @@
     <div class="login-container">
         <h1 class="text-2xl font-bold text-blue-400 mb-4">Login</h1>
         <form id="login-form">
-            <label for="username" class="block mb-2">Username</label>
-            <input type="text" id="username" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" required>
+            <label for="email" class="block mb-2">Email</label>
+            <input type="email" id="email" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" required>
 
             <label for="password" class="block mb-2">Password</label>
             <input type="password" id="password" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" required>
@@ -39,24 +40,25 @@
     </div>
 
     <script>
-        // Configure AWS Amplify
-        Amplify.configure({
-            Auth: {
-                region: 'us-west-2', // Replace with your AWS region
-                userPoolId: 'us-west-2_example', // Replace with your User Pool ID
-                userPoolWebClientId: 'exampleClientId', // Replace with your User Pool Web Client ID
-            }
-        });
+        // Replace with your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDi7IcHLDqmuzQfKlpGx9L79e3w2aVl1b8",
+            authDomain: "derrick-fca72.firebaseapp.com",
+            projectId: "derrick-fca72",
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
 
         document.getElementById('login-form').addEventListener('submit', async (event) => {
             event.preventDefault();
             
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const statusElement = document.getElementById('login-status');
 
             try {
-                await Amplify.Auth.signIn(username, password);
+                await firebase.auth().signInWithEmailAndPassword(email, password);
                 statusElement.textContent = 'Login successful!';
                 statusElement.classList.remove('text-red-500');
                 statusElement.classList.add('text-green-500');
@@ -65,7 +67,8 @@
                 window.location.href = 'protected-page.html'; // Change to your protected page
             } catch (error) {
                 console.error('Error logging in:', error);
-                statusElement.textContent = 'Error logging in: ' + error.message;
+                statusElement.textContent = 'Error: ' + error.message;
+                statusElement.classList.add('text-red-500');
             }
         });
     </script>
