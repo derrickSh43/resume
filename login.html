@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Load Amplify library -->
+    <!-- Load AWS Amplify SDK -->
     <script src="https://cdn.jsdelivr.net/npm/aws-amplify@latest/dist/aws-amplify.min.js"></script>
     <style>
         body {
@@ -27,15 +27,9 @@
 <body>
     <div class="login-container">
         <h1 class="text-2xl font-bold text-blue-400 mb-4">Login</h1>
-        <form id="login-form">
-            <label for="username" class="block mb-2">Username</label>
-            <input type="text" id="username" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" required>
-
-            <label for="password" class="block mb-2">Password</label>
-            <input type="password" id="password" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" required>
-
-            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Login</button>
-        </form>
+        <button id="google-signin-button" class="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700">
+            Sign in with Google
+        </button>
         <p id="login-status" class="mt-4 text-red-500"></p>
     </div>
 
@@ -46,32 +40,22 @@
         Amplify.configure({
             Auth: {
                 region: 'us-east-1', // Replace with your AWS region
-                userPoolId: 'us-east-1_1r99zr4SN', // Replace with your Cognito User Pool ID
-                userPoolWebClientId: 'tf52h1fen9gi0fqt1rhfde87l', // Replace with your User Pool Client ID
-                identityPoolId: 'us-east-1:29d416fd-376f-4059-9d7d-08cd5c0e0044', // Replace with your Identity Pool ID (optional)
+                userPoolId: '<your-cognito-user-pool-id>', // Replace with your Cognito User Pool ID
+                userPoolWebClientId: '<your-cognito-user-pool-client-id>', // Replace with your User Pool Client ID
+                identityPoolId: '<your-cognito-identity-pool-id>', // Replace with your Identity Pool ID
+                oauth: {
+                    domain: 'your-cognito-domain.auth.us-east-1.amazoncognito.com', // Replace with your Cognito domain
+                    scope: ['openid', 'email', 'profile'],
+                    redirectSignIn: 'https://derrick-weil.com/callback', // Your allowed callback URL
+                    redirectSignOut: 'https://derrick-weil.com/',
+                    responseType: 'code', // or 'token', depending on your app's requirements
+                }
             }
         });
 
-        document.getElementById('login-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const statusElement = document.getElementById('login-status');
-
-            try {
-                await Amplify.Auth.signIn(username, password);
-                statusElement.textContent = 'Login successful!';
-                statusElement.classList.remove('text-red-500');
-                statusElement.classList.add('text-green-500');
-
-                // Redirect to a protected page after successful login
-                window.location.href = 'protected-page.html'; // Change to your protected page
-            } catch (error) {
-                console.error('Error logging in:', error);
-                statusElement.textContent = 'Error: ' + error.message;
-                statusElement.classList.add('text-red-500');
-            }
+        // Handle Google Sign-In button click
+        document.getElementById('google-signin-button').addEventListener('click', () => {
+            Amplify.Auth.federatedSignIn({ provider: 'Google' });
         });
     </script>
 </body>
