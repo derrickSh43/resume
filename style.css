@@ -1,11 +1,66 @@
-/* style.css */
+/* General styling */
 body {
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
     font-family: 'Arial', sans-serif;
 }
-background-image {
-    border: 0px solid black;
-    padding: 25px;
-    background: url(background.jpg);
-    background-repeat: no-repeat;
-    background-size: auto;
-  }
+
+/* Header styling */
+header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.profile-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+/* Box and tile styling */
+.bg-gray-800 {
+    background-color: rgba(31, 41, 55, 0.9);
+}
+
+.category-box, .project-tile {
+    border-radius: 8px;
+    padding: 20px;
+    background-color: rgba(55, 65, 81, 0.8);
+    transition: transform 0.3s;
+}
+
+.project-tile:hover {
+    transform: scale(1.05);
+}
+
+/* Links */
+a {
+    color: #60a5fa; /* Light blue */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #1d4ed8; /* Brighter blue */
+}
+
+/* Navigation buttons */
+.nav-button {
+    display: inline-block;
+    background-color: #1f2937;
+    color: white;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+    background-color: #374151; /* Darker shade */
+}

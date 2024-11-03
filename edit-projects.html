@@ -8,37 +8,75 @@
     <script src="https://cdn.tiny.cloud/1/cnrri5xeiggmx4gxz254ocnoc78pwyb719mo85wzvjiun7g9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body class="bg-gray-900 text-white p-8">
-    <div class="editor-container">
+    <div class="editor-container max-w-4xl mx-auto bg-gray-800 p-6 rounded-md shadow-md">
         <h1 class="text-3xl font-bold text-blue-400 mb-4">Edit Projects</h1>
-        <!-- Project editing form -->
-        <label class="block mb-2">Project Title</label>
-        <textarea id="project-title" class="w-full mb-4 p-2 rounded">[Add project title]</textarea>
 
-        <label class="block mb-2">Project Image URL</label>
-        <textarea id="project-image" class="w-full mb-4 p-2 rounded">[Add image URL]</textarea>
+        <!-- Search Input -->
+        <label class="block mb-2">Search Project</label>
+        <input type="text" id="search-input" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" placeholder="Enter project title..." oninput="filterProjects()">
 
-        <label class="block mb-2">Project Description</label>
-        <textarea id="project-description" class="w-full mb-4 p-2 rounded">[Add project description]</textarea>
-
-        <button onclick="saveProject()" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Save Project</button>
+        <!-- Project List to Edit -->
+        <div id="project-list" class="space-y-4">
+            <!-- Project edit forms will be dynamically loaded here -->
+        </div>
     </div>
 
     <script>
         tinymce.init({ selector: 'textarea' });
 
-        function saveProject() {
-            const title = tinymce.get("project-title").getContent();
-            const image = tinymce.get("project-image").getContent();
-            const description = tinymce.get("project-description").getContent();
-
-            // Save project data to localStorage or your preferred storage method
-            const projectData = { title, image, description };
-            let projects = JSON.parse(localStorage.getItem("projects")) || [];
-            projects.push(projectData);
-            localStorage.setItem("projects", JSON.stringify(projects));
-            alert("Project saved successfully!");
-            window.location.href = "admin-dashboard.html";
+        // Load projects from localStorage
+        function loadProjects() {
+            const projects = JSON.parse(localStorage.getItem("projects")) || [];
+            const projectList = document.getElementById("project-list");
+            projectList.innerHTML = projects.map((project, index) => `
+                <div class="bg-gray-700 p-4 rounded-md shadow-md">
+                    <h3 class="text-lg font-bold text-blue-300 mb-2">${project.title}</h3>
+                    <textarea id="edit-title-${index}" class="w-full mb-2 p-2 rounded">${project.title}</textarea>
+                    <textarea id="edit-image-${index}" class="w-full mb-2 p-2 rounded">${project.image}</textarea>
+                    <textarea id="edit-description-${index}" class="w-full mb-2 p-2 rounded">${project.description}</textarea>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="edit-feature-${index}" class="mr-2" ${project.featured ? 'checked' : ''}> Featured
+                    </label>
+                    <button onclick="saveEditedProject(${index})" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-2">Save Changes</button>
+                </div>
+            `).join("");
         }
+
+        // Filter projects by search input
+        function filterProjects() {
+            const searchInput = document.getElementById("search-input").value.toLowerCase();
+            const projects = JSON.parse(localStorage.getItem("projects")) || [];
+            const filteredProjects = projects.filter(project => project.title.toLowerCase().includes(searchInput));
+            const projectList = document.getElementById("project-list");
+            projectList.innerHTML = filteredProjects.map((project, index) => `
+                <div class="bg-gray-700 p-4 rounded-md shadow-md">
+                    <h3 class="text-lg font-bold text-blue-300 mb-2">${project.title}</h3>
+                    <textarea id="edit-title-${index}" class="w-full mb-2 p-2 rounded">${project.title}</textarea>
+                    <textarea id="edit-image-${index}" class="w-full mb-2 p-2 rounded">${project.image}</textarea>
+                    <textarea id="edit-description-${index}" class="w-full mb-2 p-2 rounded">${project.description}</textarea>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="edit-feature-${index}" class="mr-2" ${project.featured ? 'checked' : ''}> Featured
+                    </label>
+                    <button onclick="saveEditedProject(${index})" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-2">Save Changes</button>
+                </div>
+            `).join("");
+        }
+
+        // Save the edited project back to localStorage
+        function saveEditedProject(index) {
+            const projects = JSON.parse(localStorage.getItem("projects")) || [];
+            projects[index].title = tinymce.get(`edit-title-${index}`).getContent();
+            projects[index].image = tinymce.get(`edit-image-${index}`).getContent();
+            projects[index].description = tinymce.get(`edit-description-${index}`).getContent();
+            projects[index].featured = document.getElementById(`edit-feature-${index}`).checked;
+
+            localStorage.setItem("projects", JSON.stringify(projects));
+            alert("Project updated successfully!");
+            loadProjects(); // Reload the projects to reflect updates
+        }
+
+        // Load projects on page load
+        document.addEventListener("DOMContentLoaded", loadProjects);
     </script>
 </body>
 </html>

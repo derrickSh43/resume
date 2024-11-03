@@ -13,6 +13,17 @@
             background-repeat: no-repeat;
             color: white;
         }
+        .category-box {
+            border-radius: 8px;
+            padding: 20px;
+            background-color: rgba(55, 65, 81, 0.8);
+        }
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
     </style>
 </head>
 <body>
@@ -22,25 +33,48 @@
             <a href="login.html" class="text-blue-500 hover:text-blue-700">Login</a>
         </div>
 
-        <!-- Header -->
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-blue-500">Derrick's Portfolio</h1>
-            <p class="text-gray-300">Cloud Engineer | Developer | Security Enthusiast</p>
+        <!-- Header with Profile Image -->
+        <header class="flex items-center mb-8">
+            <img src="profile-image.jpg" alt="Derrick Weil" class="profile-img">
+            <div>
+                <h1 class="text-4xl font-bold text-blue-500">Derrick's Portfolio</h1>
+                <p class="text-gray-300">Cloud Engineer | Developer | Security Enthusiast</p>
+            </div>
         </header>
 
         <!-- Resume Section -->
         <section id="resume" class="mb-8">
             <h2 class="text-2xl font-semibold text-blue-400 mb-4">Resume</h2>
-            <div id="resume-content" class="bg-gray-800 text-white p-4 rounded">
-                <!-- Resume data loaded from localStorage -->
+            <div class="bg-gray-800 p-4 rounded-md shadow">
+                <h3 class="text-lg font-bold text-blue-300 mb-2">Summary</h3>
+                <p>Experienced Cloud Engineer with expertise in infrastructure automation, security, and DevOps practices. Proficient in AWS, Terraform, CI/CD pipelines, and AI integrations.</p>
             </div>
         </section>
 
-        <!-- Portfolio Section -->
-        <section id="portfolio" class="mb-8">
-            <h2 class="text-2xl font-semibold text-blue-400 mb-4">Portfolio</h2>
+        <!-- Featured Projects -->
+        <section id="featured-projects" class="mb-8">
+            <h2 class="text-2xl font-semibold text-blue-400 mb-4">Featured Projects</h2>
             <div id="portfolio-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <!-- Project tiles loaded from localStorage -->
+                <!-- Featured project tiles will be loaded from localStorage -->
+            </div>
+        </section>
+
+        <!-- Project Categories -->
+        <section id="categories" class="mb-8">
+            <h2 class="text-2xl font-semibold text-blue-400 mb-4">Project Categories</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="category-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">Terraform</h3>
+                    <p>Infrastructure as code projects involving provisioning and management of cloud resources.</p>
+                </div>
+                <div class="category-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">CI/CD</h3>
+                    <p>Automated pipeline projects involving continuous integration and delivery of software.</p>
+                </div>
+                <div class="category-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">AI</h3>
+                    <p>Machine learning and artificial intelligence integration into cloud environments.</p>
+                </div>
             </div>
         </section>
 
