@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Load Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
+    <!-- Load Amplify library -->
+    <script src="https://cdn.jsdelivr.net/npm/aws-amplify@latest/dist/aws-amplify.min.js"></script>
     <style>
         body {
             background-color: #1a202c;
@@ -29,42 +28,39 @@
     <div class="login-container">
         <h1 class="text-2xl font-bold text-blue-400 mb-4">Login</h1>
         <form id="login-form">
-            <label for="email" class="block mb-2">Email</label>
-            <input type="email" id="email" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" required>
+            <label for="username" class="block mb-2">Username</label>
+            <input type="text" id="username" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" required>
 
             <label for="password" class="block mb-2">Password</label>
             <input type="password" id="password" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" required>
 
-            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Login with Email</button>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Login</button>
         </form>
-        
-        <button id="google-signin-button" class="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700">
-            Sign in with Google
-        </button>
-        
         <p id="login-status" class="mt-4 text-red-500"></p>
     </div>
 
-    <script>
-        // Replace with your Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyDi7IcHLDqmuzQfKlpGx9L79e3w2aVl1b8",
-            authDomain: "derrick-fca72.firebaseapp.com",
-            projectId: "derrick-fca72",
-        };
+    <script type="module">
+        import { Amplify } from "https://cdn.jsdelivr.net/npm/aws-amplify@latest/dist/aws-amplify.esm.js";
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+        // Configure Amplify with Cognito
+        Amplify.configure({
+            Auth: {
+                region: 'us-east-1', // Replace with your AWS region
+                userPoolId: 'us-east-1_1r99zr4SN', // Replace with your Cognito User Pool ID
+                userPoolWebClientId: 'tf52h1fen9gi0fqt1rhfde87l', // Replace with your User Pool Client ID
+                identityPoolId: 'us-east-1:29d416fd-376f-4059-9d7d-08cd5c0e0044', // Replace with your Identity Pool ID (optional)
+            }
+        });
 
         document.getElementById('login-form').addEventListener('submit', async (event) => {
             event.preventDefault();
             
-            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const statusElement = document.getElementById('login-status');
 
             try {
-                await firebase.auth().signInWithEmailAndPassword(email, password);
+                await Amplify.Auth.signIn(username, password);
                 statusElement.textContent = 'Login successful!';
                 statusElement.classList.remove('text-red-500');
                 statusElement.classList.add('text-green-500');
@@ -73,26 +69,6 @@
                 window.location.href = 'protected-page.html'; // Change to your protected page
             } catch (error) {
                 console.error('Error logging in:', error);
-                statusElement.textContent = 'Error: ' + error.message;
-                statusElement.classList.add('text-red-500');
-            }
-        });
-
-        // Handle Google Sign-In
-        document.getElementById('google-signin-button').addEventListener('click', async () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            const statusElement = document.getElementById('login-status');
-
-            try {
-                await firebase.auth().signInWithPopup(provider);
-                statusElement.textContent = 'Google sign-in successful!';
-                statusElement.classList.remove('text-red-500');
-                statusElement.classList.add('text-green-500');
-
-                // Redirect to a protected page after successful login
-                window.location.href = 'protected-page.html'; // Change to your protected page
-            } catch (error) {
-                console.error('Error with Google sign-in:', error);
                 statusElement.textContent = 'Error: ' + error.message;
                 statusElement.classList.add('text-red-500');
             }
