@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Derrick's Portfolio</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdn.tiny.cloud; img-src 'self'; style-src 'self' 'unsafe-inline';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';">
     <style>
         body {
             background-image: url('background.jpg');
@@ -36,6 +36,27 @@
             color: inherit;
             text-decoration: none;
         }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #2d3748;
+            color: white;
+            border: none;
+        }
+        .contact-form button {
+            background-color: #4299e1;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .contact-form button:hover {
+            background-color: #3182ce;
+        }
     </style>
 </head>
 <body>
@@ -51,6 +72,7 @@
             <div>
                 <h1 class="text-4xl font-bold text-blue-500">Derrick's Portfolio</h1>
                 <p class="text-gray-300">Cloud Engineer | Developer | Security Enthusiast</p>
+                <a href="https://www.linkedin.com/in/your-linkedin-id" class="text-blue-400 hover:text-blue-600 mt-2 inline-block">Connect on LinkedIn</a>
             </div>
         </header>
 
@@ -82,36 +104,83 @@
             </div>
         </section>
 
-        <!-- Project Categories Section -->
-        <section id="categories" class="mb-8">
-            <h2 class="text-2xl font-semibold text-blue-400 mb-4">Project Categories</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <a href="all-projects.html?category=terraform" class="category-box">
-                    <h3 class="text-xl font-bold text-blue-300 mb-2">Terraform</h3>
-                    <p>Infrastructure as code projects involving provisioning and management of cloud resources.</p>
-                </a>
-                <a href="all-projects.html?category=ci-cd" class="category-box">
-                    <h3 class="text-xl font-bold text-blue-300 mb-2">CI/CD</h3>
-                    <p>Automated pipeline projects involving continuous integration and delivery of software.</p>
-                </a>
-                <a href="all-projects.html?category=ai" class="category-box">
-                    <h3 class="text-xl font-bold text-blue-300 mb-2">AI</h3>
-                    <p>Machine learning and artificial intelligence integration into cloud environments.</p>
-                </a>
-                <a href="all-projects.html" class="category-box">
-                    <h3 class="text-xl font-bold text-blue-300 mb-2">More</h3>
-                    <p>Explore all other projects and categories.</p>
-                </a>
-            </div>
-        </section>
+<!-- Contact Form Section -->
+<section id="contact" class="mb-8">
+    <h2 class="text-2xl font-semibold text-blue-400 mb-4">Contact Me</h2>
+    <form action="mailto:your-email@example.com" method="post" enctype="text/plain" class="decor bg-gray-800 p-6 rounded-md shadow">
+        <div class="form-left-decoration"></div>
+        <div class="form-right-decoration"></div>
+        <div class="circle"></div>
+        <div class="form-inner">
+            <input type="text" placeholder="Name" name="name" class="w-full mb-4 p-3 rounded bg-gray-700 text-white" required>
+            <input type="email" placeholder="Email" name="email" class="w-full mb-4 p-3 rounded bg-gray-700 text-white" required>
+            <textarea placeholder="Message..." name="message" rows="5" class="w-full mb-4 p-3 rounded bg-gray-700 text-white" required></textarea>
+            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Send</button>
+        </div>
+    </form>
+</section>
+
+<!-- Style Adjustments for Contact Form -->
+<style>
+    .form-left-decoration,
+    .form-right-decoration {
+        content: "";
+        position: absolute;
+        width: 50px;
+        height: 20px;
+        border-radius: 20px;
+        background: #1a202c; /* Matching with your current background */
+    }
+    .form-left-decoration {
+        bottom: 60px;
+        left: -30px;
+    }
+    .form-right-decoration {
+        top: 60px;
+        right: -30px;
+    }
+    .form-left-decoration:before,
+    .form-left-decoration:after,
+    .form-right-decoration:before,
+    .form-right-decoration:after {
+        content: "";
+        position: absolute;
+        width: 50px;
+        height: 20px;
+        border-radius: 30px;
+        background: #2d3748; /* Darker shade */
+    }
+    .form-left-decoration:before {
+        top: -20px;
+    }
+    .form-left-decoration:after {
+        top: 20px;
+        left: 10px;
+    }
+    .form-right-decoration:before {
+        top: -20px;
+        right: 0;
+    }
+    .form-right-decoration:after {
+        top: 20px;
+        right: 10px;
+    }
+    .circle {
+        position: absolute;
+        bottom: 80px;
+        left: -55px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #2d3748;
+    }
+</style>
+
 
         <!-- Footer with copyright -->
         <footer class="text-center text-gray-400 mt-8">
             <p>&copy; 2024 Derrick Weil. All rights reserved.</p>
         </footer>
     </div>
-
-    <!-- Link to main script -->
-    <script src="script.js"></script>
 </body>
 </html>

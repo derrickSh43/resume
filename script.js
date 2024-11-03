@@ -88,3 +88,43 @@ function filterProjects() {
     // Render the filtered projects
     renderProjects(filteredProjects);
 }
+// Existing sections (leave these untouched)
+
+// Section 7: Contact Form Submission Logic
+document.getElementById('contact-form')?.addEventListener('submit', async function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const formData = new FormData(this);
+    const data = {
+        name: formData.get('name').trim(),
+        email: formData.get('email').trim(),
+        message: formData.get('message').trim()
+    };
+
+    // Basic client-side validation
+    if (!data.name || !data.email || !data.message) {
+        alert('Please fill in all fields.');
+        return;
+    }
+
+    try {
+        // Replace 'https://your-api-id.amazonaws.com/contact' with your actual Amplify API endpoint
+        const response = await fetch('https://your-api-id.amazonaws.com/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert('Your message has been sent successfully!');
+            this.reset(); // Clear the form
+        } else {
+            alert('Failed to send the message. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    }
+});
