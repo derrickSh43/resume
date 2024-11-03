@@ -56,6 +56,13 @@
         // Handle Google Sign-In button click
         document.getElementById('google-signin-button').addEventListener('click', () => {
             Amplify.Auth.federatedSignIn({ provider: 'Google' });
+            try {
+                Amplify.Auth.federatedSignIn({ provider: 'Google' });
+                console.log('Federated sign-in initiated');
+            } catch (error) {
+                console.error('Error initiating federated sign-in:', error);
+                document.getElementById('login-status').textContent = 'Error: ' + error.message;
+            }
         });
     </script>
 </body>
