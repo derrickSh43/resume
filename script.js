@@ -1,89 +1,90 @@
-// Function to load resume and project content from localStorage
-function loadContent() {
-    const savedData = JSON.parse(localStorage.getItem("contentData"));
-    if (savedData) {
-        document.getElementById("resume-content").innerHTML = `
-            <h2 class="text-xl font-bold mb-2 text-blue-400">Summary</h2>${savedData.summary}
-            <h2 class="text-xl font-bold mb-2 text-blue-400">Experience</h2>${savedData.experience}
-            <h2 class="text-xl font-bold mb-2 text-blue-400">Skills</h2>${savedData.skills}
-        `;
-    }
-
-    const projects = JSON.parse(localStorage.getItem("projects")) || [];
-    const featuredProjects = projects.filter(project => project.featured);
-    const allProjects = projects.slice(3);
-
-    const portfolioGrid = document.getElementById("portfolio-grid");
-    portfolioGrid.innerHTML = featuredProjects.map((project, index) => `
-        <div class="bg-gray-800 p-4 rounded-md shadow project-tile">
-            <h3 class="text-lg font-bold text-blue-300 mb-2">
-                <a href="project-details.html?projectIndex=${index}" class="text-blue-300 hover:underline">${project.title}</a>
-            </h3>
-            <img src="${project.image}" alt="${project.title}" class="w-full h-32 object-cover mb-2 rounded">
-            <p>${project.description}</p>
-        </div>
-    `).join("");
-
-    const allProjectsGrid = document.getElementById("all-projects-grid");
-    allProjectsGrid.innerHTML = allProjects.map((project, index) => `
-        <div class="bg-gray-800 p-4 rounded-md shadow project-tile">
-            <h3 class="text-lg font-bold text-blue-300 mb-2">
-                <a href="project-details.html?projectIndex=${index + 3}" class="text-blue-300 hover:underline">${project.title}</a>
-            </h3>
-            <img src="${project.image}" alt="${project.title}" class="w-full h-32 object-cover mb-2 rounded">
-            <p>${project.description}</p>
-        </div>
-    `).join("");
-}
-
-// Load individual project details
-function loadProjectDetails() {
+// Section 1: Initial Setup and Event Listener
+document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
-    const projectIndex = urlParams.get('projectIndex');
-    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    const category = urlParams.get('category');
+    loadAllProjects(category);
+    loadFeaturedProjects();
+});
 
-    if (projectIndex !== null && projects[projectIndex]) {
-        const project = projects[projectIndex];
-        document.getElementById("project-details").innerHTML = `
-            <h1 class="text-3xl font-bold text-blue-400 mb-4">${project.title}</h1>
-            <img src="${project.image}" alt="${project.title}" class="w-full h-64 object-cover mb-4 rounded">
+// Section 2: Load All Projects Based on Category
+function loadAllProjects(category = null) {
+    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    let filteredProjects = projects;
+
+    // Filter projects based on category if provided
+    if (category) {
+        filteredProjects = projects.filter(project => project.category === category);
+    }
+
+    // Populate the side menu with project titles
+    const projectMenu = document.getElementById("project-menu");
+    projectMenu.innerHTML = filteredProjects.map((project, index) => `
+        <li><a href="project-details.html?projectIndex=${index}" class="text-blue-300 hover:underline">${project.title.slice(0, 20)}</a></li>
+    `).join("");
+
+    // Render the paginated projects
+    renderProjects(filteredProjects);
+}
+
+// Section 3: Render Paginated Projects
+function renderProjects(projects) {
+    const start = (currentPage - 1) * projectsPerPage;
+    const end = start + projectsPerPage;
+    const paginatedProjects = projects.slice(start, end);
+    const projectContainer = document.getElementById("project-container");
+
+    projectContainer.innerHTML = paginatedProjects.map((project, index) => `
+        <a href="project-details.html?projectIndex=${start + index}" class="project-box">
+            <h3 class="text-xl font-bold text-blue-300 mb-2">${project.title}</h3>
             <p>${project.description}</p>
-        `;
-    } else {
-        document.getElementById("project-details").innerHTML = '<p>Project not found.</p>';
+        </a>
+    `).join("");
+
+    // Render pagination controls
+    renderPagination(projects.length);
+}
+
+// Section 4: Render Pagination Controls
+function renderPagination(totalProjects) {
+    const totalPages = Math.ceil(totalProjects / projectsPerPage);
+    const paginationContainer = document.getElementById("pagination");
+    paginationContainer.innerHTML = "";
+
+    // Create pagination buttons
+    for (let i = 1; i <= totalPages; i++) {
+        const button = document.createElement("button");
+        button.textContent = i;
+        button.classList.add("pagination-button");
+        button.onclick = () => {
+            currentPage = i;
+            loadAllProjects();
+        };
+        paginationContainer.appendChild(button);
     }
 }
-function checkFeaturedLimit() {
+
+// Section 5: Load Featured Projects
+function loadFeaturedProjects() {
     const projects = JSON.parse(localStorage.getItem("projects")) || [];
-    const featuredCount = projects.filter(project => project.featured).length;
+    const featuredProjects = projects.filter(project => project.featured).slice(0, 6);
+    const featuredGrid = document.getElementById("featured-grid");
 
-    if (featuredCount >= 3 && !document.getElementById("edit-feature").checked) {
-        alert("Only three projects can be featured at a time.");
-        document.getElementById("edit-feature").checked = false;
-    }
+    featuredGrid.innerHTML = featuredProjects.map((project, index) => `
+        <a href="project-details.html?projectIndex=${index}" class="project-box">
+            <h3 class="text-xl font-bold text-blue-300 mb-2">${project.title}</h3>
+            <p>${project.description}</p>
+        </a>
+    `).join("");
 }
 
-function saveEditedProject(index) {
+// Section 6: Search Projects by Title or Description
+function filterProjects() {
+    const searchTerm = document.getElementById("search-bar").value.toLowerCase();
     const projects = JSON.parse(localStorage.getItem("projects")) || [];
-    const currentProject = projects[index];
+    const filteredProjects = projects.filter(project =>
+        project.title.toLowerCase().includes(searchTerm) || project.description.toLowerCase().includes(searchTerm)
+    );
 
-    currentProject.title = tinymce.get("edit-title").getContent();
-    currentProject.image = tinymce.get("edit-image").getContent();
-    currentProject.description = tinymce.get("edit-description").getContent();
-    currentProject.category = document.getElementById("edit-category").value;
-    currentProject.featured = document.getElementById("edit-feature").checked;
-
-    const featuredCount = projects.filter(project => project.featured).length;
-    if (currentProject.featured && featuredCount > 3) {
-        alert("You cannot have more than three featured projects.");
-        currentProject.featured = false;
-    }
-
-    localStorage.setItem("projects", JSON.stringify(projects));
-    alert("Project updated successfully!");
-    document.getElementById("project-select").value = "";
-    document.getElementById("project-details-container").innerHTML = '';
+    // Render the filtered projects
+    renderProjects(filteredProjects);
 }
-
-// Add event listener to load content when the page is loaded
-document.addEventListener("DOMContentLoaded", loadContent);

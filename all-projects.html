@@ -3,117 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New Project</title>
+    <title>All Projects</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.tiny.cloud/1/cnrri5xeiggmx4gxz254ocnoc78pwyb719mo85wzvjiun7g9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; img-src 'self'; style-src 'self' 'unsafe-inline';">
     <style>
         body {
             background-color: #1a202c; /* Dark background */
             color: white;
             font-family: 'Arial', sans-serif;
         }
-        .nav-button {
-            display: inline-block;
-            background-color: #1f2937;
-            color: white;
-            padding: 10px 20px;
-            margin: 5px;
-            border-radius: 5px;
-            text-align: center;
-            transition: background-color 0.3s;
-        }
-        .nav-button:hover {
-            background-color: #374151;
-        }
-        .admin-box {
+        .project-box {
             border-radius: 8px;
             padding: 20px;
             background-color: rgba(55, 65, 81, 0.8);
             margin-bottom: 15px;
+            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+        .project-box:hover {
+            background-color: rgba(75, 85, 99, 0.9);
+            transform: scale(1.03);
+        }
+        .side-menu {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .breadcrumb {
+            margin-bottom: 15px;
+            color: #60a5fa;
+        }
+        .pagination-button {
+            display: inline-block;
+            background-color: #1f2937;
+            color: white;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .pagination-button:hover {
+            background-color: #374151;
         }
     </style>
 </head>
 <body class="bg-gray-900 text-white p-8">
-    <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold text-blue-400 mb-6">Create New Project</h1>
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-blue-400 mb-6">All Projects</h1>
 
         <!-- Navigation buttons -->
         <div class="mb-4">
-            <a href="index.html" class="nav-button">Home</a>
-            <a href="admin-dashboard.html" class="nav-button">Dashboard</a>
+            <a href="index.html" class="nav-button" rel="noopener noreferrer">Home</a>
+            <a href="all-projects.html" class="nav-button" rel="noopener noreferrer">Reload</a>
         </div>
 
-        <!-- New Project Form -->
-        <div class="admin-box">
-            <label class="block mb-2">Project Title</label>
-            <textarea id="project-title" class="w-full mb-4 p-2 rounded"></textarea>
+        <!-- Breadcrumb navigation -->
+        <div class="breadcrumb">
+            <a href="index.html" rel="noopener noreferrer">Home</a> > All Projects
+        </div>
 
-            <label class="block mb-2">Project Image URL</label>
-            <textarea id="project-image" class="w-full mb-4 p-2 rounded"></textarea>
+        <!-- Search bar -->
+        <div class="mb-4">
+            <input type="text" id="search-bar" placeholder="Search projects..." class="w-full p-2 rounded bg-gray-700 text-white" oninput="filterProjects()">
+        </div>
 
-            <label class="block mb-2">Project Description</label>
-            <textarea id="project-description" class="w-full mb-4 p-2 rounded"></textarea>
+        <!-- Featured Projects -->
+        <section id="featured-projects" class="mb-8">
+            <h2 class="text-2xl font-semibold text-blue-400 mb-4">Featured Projects</h2>
+            <div id="featured-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Placeholder for featured projects -->
+                <a href="project-details.html?projectIndex=0" class="project-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">Project Alpha</h3>
+                    <p>A cutting-edge infrastructure automation project utilizing Terraform and AWS.</p>
+                </a>
+                <a href="project-details.html?projectIndex=1" class="project-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">Project Beta</h3>
+                    <p>Comprehensive CI/CD pipeline implementation for seamless software deployment.</p>
+                </a>
+                <a href="project-details.html?projectIndex=2" class="project-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">Project Gamma</h3>
+                    <p>AI-driven cloud integration project enhancing data processing efficiency.</p>
+                </a>
+            </div>
+        </section>
 
-            <label class="block mb-2">Category</label>
-            <select id="project-category" class="w-full mb-4 p-2 rounded bg-gray-700 text-white">
-                <option value="terraform">Terraform</option>
-                <option value="ci-cd">CI/CD</option>
-                <option value="ai">AI</option>
-                <option value="other">Other</option>
-            </select>
+        <!-- Side menu for project navigation -->
+        <div class="side-menu bg-gray-800 p-4 rounded-md mb-6">
+            <h3 class="text-lg font-bold text-blue-300 mb-2">Project List</h3>
+            <ul id="project-menu">
+                <!-- Dynamic project list items -->
+            </ul>
+        </div>
 
-            <label class="flex items-center">
-                <input type="checkbox" id="project-feature" class="mr-2" onchange="checkFeaturedLimit()"> Featured
-            </label>
+        <!-- Project Display Section -->
+        <div id="project-container" class="space-y-4">
+            <!-- Projects will be dynamically loaded here -->
+        </div>
 
-            <button onclick="saveNewProject()" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-4">Save Project</button>
+        <!-- Pagination buttons -->
+        <div id="pagination" class="text-center mt-4">
+            <!-- Pagination controls will be added dynamically -->
         </div>
     </div>
 
     <script>
-        tinymce.init({
-            selector: '#project-title, #project-image, #project-description',
-            plugins: ['link image code'],
-            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
-            menubar: false,
-            height: 200
+        // Section 1: Initial Setup and Event Listener
+        let currentPage = 1;
+        const projectsPerPage = 6;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            loadAllProjects(category);
+            loadFeaturedProjects();
         });
 
-        function checkFeaturedLimit() {
+        // Section 2: Load All Projects Based on Category
+        function loadAllProjects(category = null) {
             const projects = JSON.parse(localStorage.getItem("projects")) || [];
-            const featuredCount = projects.filter(project => project.featured).length;
+            let filteredProjects = projects;
 
-            if (featuredCount >= 3 && document.getElementById("project-feature").checked) {
-                alert("Only three projects can be featured at a time.");
-                document.getElementById("project-feature").checked = false;
+            // Filter projects based on category if provided
+            if (category) {
+                filteredProjects = projects.filter(project => project.category === category);
+            }
+
+            // Populate the side menu with project titles
+            const projectMenu = document.getElementById("project-menu");
+            projectMenu.innerHTML = filteredProjects.map((project, index) => `
+                <li><a href="project-details.html?projectIndex=${index}" class="text-blue-300 hover:underline">${DOMPurify.sanitize(project.title.slice(0, 20))}</a></li>
+            `).join("");
+
+            // Render the paginated projects
+            renderProjects(filteredProjects);
+        }
+
+        // Section 3: Render Paginated Projects
+        function renderProjects(projects) {
+            const start = (currentPage - 1) * projectsPerPage;
+            const end = start + projectsPerPage;
+            const paginatedProjects = projects.slice(start, end);
+            const projectContainer = document.getElementById("project-container");
+
+            projectContainer.innerHTML = paginatedProjects.map((project, index) => `
+                <a href="project-details.html?projectIndex=${start + index}" class="project-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">${DOMPurify.sanitize(project.title)}</h3>
+                    <p>${DOMPurify.sanitize(project.description)}</p>
+                </a>
+            `).join("");
+
+            // Render pagination controls
+            renderPagination(projects.length);
+        }
+
+        // Section 4: Render Pagination Controls
+        function renderPagination(totalProjects) {
+            const totalPages = Math.ceil(totalProjects / projectsPerPage);
+            const paginationContainer = document.getElementById("pagination");
+            paginationContainer.innerHTML = "";
+
+            // Create pagination buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement("button");
+                button.textContent = i;
+                button.classList.add("pagination-button");
+                button.onclick = () => {
+                    currentPage = i;
+                    loadAllProjects();
+                };
+                paginationContainer.appendChild(button);
             }
         }
 
-        function saveNewProject() {
-            const title = tinymce.get("project-title").getContent();
-            const image = tinymce.get("project-image").getContent();
-            const description = tinymce.get("project-description").getContent();
-            const category = document.getElementById("project-category").value;
-            const featured = document.getElementById("project-feature").checked;
+        // Section 5: Load Featured Projects
+        function loadFeaturedProjects() {
+            const projects = JSON.parse(localStorage.getItem("projects")) || [];
+            const featuredProjects = projects.filter(project => project.featured).slice(0, 6);
+            const featuredGrid = document.getElementById("featured-grid");
 
-            const projectData = { title, image, description, category, featured };
-            let projects = JSON.parse(localStorage.getItem("projects")) || [];
+            featuredGrid.innerHTML = featuredProjects.map((project, index) => `
+                <a href="project-details.html?projectIndex=${index}" class="project-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">${DOMPurify.sanitize(project.title)}</h3>
+                    <p>${DOMPurify.sanitize(project.description)}</p>
+                </a>
+            `).join("");
+        }
 
-            const featuredCount = projects.filter(project => project.featured).length;
-            if (featured && featuredCount >= 3) {
-                alert("You cannot have more than three featured projects.");
-                return;
-            }
+        // Section 6: Search Projects by Title or Description
+        function filterProjects() {
+            const searchTerm = DOMPurify.sanitize(document.getElementById("search-bar").value.toLowerCase());
+            const projects = JSON.parse(localStorage.getItem("projects")) || [];
+            const filteredProjects = projects.filter(project =>
+                project.title.toLowerCase().includes(searchTerm) || project.description.toLowerCase().includes(searchTerm)
+            );
 
-            projects.push(projectData);
-            localStorage.setItem("projects", JSON.stringify(projects));
-            alert("Project created successfully!");
-            document.getElementById("project-title").value = '';
-            document.getElementById("project-image").value = '';
-            document.getElementById("project-description").value = '';
-            document.getElementById("project-category").value = 'other';
-            document.getElementById("project-feature").checked = false;
+            // Render the filtered projects
+            renderProjects(filteredProjects);
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.0/dist/purify.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Derrick's Portfolio</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdn.tiny.cloud; img-src 'self'; style-src 'self' 'unsafe-inline';">
     <style>
         body {
             background-image: url('background.jpg');
@@ -22,7 +23,7 @@
             cursor: pointer;
         }
         .category-box:hover, .featured-box:hover {
-            background-color: rgba(75, 85, 99, 0.9); /* Slightly lighter shade */
+            background-color: rgba(75, 85, 99, 0.9);
             transform: scale(1.03);
         }
         .profile-img {
@@ -41,12 +42,12 @@
     <div class="max-w-6xl mx-auto p-4">
         <!-- Login button -->
         <div class="flex justify-end mb-4">
-            <a href="login.html" class="text-blue-500 hover:text-blue-700">Login</a>
+            <a href="login.html" class="text-blue-500 hover:text-blue-700" rel="noopener noreferrer">Login</a>
         </div>
 
         <!-- Header with Profile Image -->
         <header class="flex items-center mb-8">
-            <img src="profile-image.jpg" alt="Derrick Weil" class="profile-img">
+            <img src="profile-image.jpg" alt="Derrick Weil's Profile Picture" class="profile-img">
             <div>
                 <h1 class="text-4xl font-bold text-blue-500">Derrick's Portfolio</h1>
                 <p class="text-gray-300">Cloud Engineer | Developer | Security Enthusiast</p>
@@ -81,29 +82,28 @@
             </div>
         </section>
 
-<!-- Project Categories Section -->
-<section id="categories" class="mb-8">
-    <h2 class="text-2xl font-semibold text-blue-400 mb-4">Project Categories</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <a href="all-projects.html?category=terraform" class="category-box">
-            <h3 class="text-xl font-bold text-blue-300 mb-2">Terraform</h3>
-            <p>Infrastructure as code projects involving provisioning and management of cloud resources.</p>
-        </a>
-        <a href="all-projects.html?category=ci-cd" class="category-box">
-            <h3 class="text-xl font-bold text-blue-300 mb-2">CI/CD</h3>
-            <p>Automated pipeline projects involving continuous integration and delivery of software.</p>
-        </a>
-        <a href="all-projects.html?category=ai" class="category-box">
-            <h3 class="text-xl font-bold text-blue-300 mb-2">AI</h3>
-            <p>Machine learning and artificial intelligence integration into cloud environments.</p>
-        </a>
-        <a href="all-projects.html" class="category-box">
-            <h3 class="text-xl font-bold text-blue-300 mb-2">More</h3>
-            <p>Explore all other projects and categories.</p>
-        </a>
-    </div>
-</section>
-
+        <!-- Project Categories Section -->
+        <section id="categories" class="mb-8">
+            <h2 class="text-2xl font-semibold text-blue-400 mb-4">Project Categories</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <a href="all-projects.html?category=terraform" class="category-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">Terraform</h3>
+                    <p>Infrastructure as code projects involving provisioning and management of cloud resources.</p>
+                </a>
+                <a href="all-projects.html?category=ci-cd" class="category-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">CI/CD</h3>
+                    <p>Automated pipeline projects involving continuous integration and delivery of software.</p>
+                </a>
+                <a href="all-projects.html?category=ai" class="category-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">AI</h3>
+                    <p>Machine learning and artificial intelligence integration into cloud environments.</p>
+                </a>
+                <a href="all-projects.html" class="category-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">More</h3>
+                    <p>Explore all other projects and categories.</p>
+                </a>
+            </div>
+        </section>
 
         <!-- Footer with copyright -->
         <footer class="text-center text-gray-400 mt-8">
