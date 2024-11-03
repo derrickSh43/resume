@@ -120,8 +120,8 @@
 </section>
 
 <script>
-    document.getElementById('contact-form')?.addEventListener('submit', async function (event) {
-        event.preventDefault(); // Prevent default form submission
+    document.getElementById('contact-form').addEventListener('submit', async function (event) {
+        event.preventDefault(); // Prevent default form submission behavior
 
         const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim();
@@ -135,12 +135,30 @@
             return;
         }
 
+        const data = {
+            name,
+            email,
+            message
+        };
+
         try {
-            // Simulate form submission for demonstration purposes
-            // Replace this with your actual form submission logic, such as an API call
-            formStatus.classList.remove('hidden');
-            formError.classList.add('hidden');
-            this.reset(); // Clear the form after successful submission
+            // Replace 'https://your-api-id.amazonaws.com/contact' with your actual API endpoint
+            const response = await fetch('https://your-api-id.amazonaws.com/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                formStatus.classList.remove('hidden');
+                formError.classList.add('hidden');
+                this.reset(); // Clear the form after successful submission
+            } else {
+                formError.classList.remove('hidden');
+                formStatus.classList.add('hidden');
+            }
         } catch (error) {
             console.error('Error:', error);
             formError.classList.remove('hidden');
@@ -148,6 +166,7 @@
         }
     });
 </script>
+
 
 
 <!-- Style Adjustments for Contact Form -->
