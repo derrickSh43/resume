@@ -3,73 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Resume and Portfolio</title>
+    <title>Edit Resume</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #1a202c; /* Dark background */
             color: white;
-            background-image: url('background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            font-family: 'Arial', sans-serif;
         }
-        .editor-container {
-            max-width: 700px;
-            margin: auto;
-            padding: 2rem;
-            background-color: #2d3748; /* Darker container */
-            border-radius: 8px;
+        .nav-button {
+            display: inline-block;
+            background-color: #1f2937;
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .nav-button:hover {
+            background-color: #374151;
         }
     </style>
-
-    <!-- TinyMCE Script with API Key -->
-    <script src="https://cdn.tiny.cloud/1/cnrri5xeiggmx4gxz254ocnoc78pwyb719mo85wzvjiun7g9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
-<body>
-    <div class="editor-container">
-        <h1 class="text-3xl font-bold text-blue-400 mb-4">Edit Your Resume and Portfolio</h1>
+<body class="bg-gray-900 text-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-blue-400 mb-6">Edit Your Resume</h1>
 
-        <!-- Resume Editing Section -->
-        <label class="block mb-2">Summary</label>
-        <textarea id="summary" class="w-full mb-4 p-2 rounded">[Add your summary here]</textarea>
+        <!-- Navigation buttons -->
+        <div class="mb-4">
+            <a href="index.html" class="nav-button">Home</a>
+            <a href="admin-dashboard.html" class="nav-button">Dashboard</a>
+        </div>
 
-        <label class="block mb-2">Experience</label>
-        <textarea id="experience" class="w-full mb-4 p-2 rounded">[Add your experience here]</textarea>
+        <!-- Resume Editing Form -->
+        <div class="admin-box">
+            <label class="block mb-2">Summary</label>
+            <textarea id="summary" class="w-full mb-4 p-2 rounded">[Your current summary content]</textarea>
 
-        <label class="block mb-2">Skills</label>
-        <textarea id="skills" class="w-full mb-4 p-2 rounded">[Add your skills here]</textarea>
+            <label class="block mb-2">Experience</label>
+            <textarea id="experience" class="w-full mb-4 p-2 rounded">[Your current experience content]</textarea>
 
-        <!-- Portfolio Editing Section -->
-        <label class="block mb-2">Portfolio</label>
-        <textarea id="portfolio" class="w-full mb-4 p-2 rounded">[Add your portfolio projects here]</textarea>
+            <label class="block mb-2">Skills</label>
+            <textarea id="skills" class="w-full mb-4 p-2 rounded">[Your current skills content]</textarea>
 
-        <!-- Save button -->
-        <button onclick="saveContent()" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Save Content
-        </button>
+            <button onclick="saveResume()" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Save Resume</button>
+        </div>
     </div>
 
-    <!-- TinyMCE Initialization -->
+    <script src="https://cdn.tiny.cloud/1/cnrri5xeiggmx4gxz254ocnoc78pwyb719mo85wzvjiun7g9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
-      tinymce.init({
-        selector: 'textarea',
-        plugins: [
-          'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-          'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown',
-          'importword', 'exportword', 'exportpdf'
-        ],
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        tinycomments_mode: 'embedded',
-        tinycomments_author: 'Author name',
-        mergetags_list: [
-          { value: 'First.Name', title: 'First Name' },
-          { value: 'Email', title: 'Email' },
-        ]
-      });
-    </script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: ['link image code'],
+            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
+            menubar: false,
+            height: 200
+        });
 
-    <!-- Link to main script for saving data -->
-    <script src="script.js"></script>
+        function saveResume() {
+            const summary = tinymce.get("summary").getContent();
+            const experience = tinymce.get("experience").getContent();
+            const skills = tinymce.get("skills").getContent();
+            
+            const resumeData = { summary, experience, skills };
+            localStorage.setItem("resumeData", JSON.stringify(resumeData));
+            alert("Resume saved successfully!");
+        }
+    </script>
 </body>
 </html>

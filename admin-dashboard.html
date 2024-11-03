@@ -5,13 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a202c; /* Dark background */
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+        .admin-box {
+            border-radius: 8px;
+            padding: 20px;
+            background-color: rgba(55, 65, 81, 0.8);
+            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .admin-box:hover {
+            background-color: rgba(75, 85, 99, 0.9);
+            transform: scale(1.03);
+        }
+        .nav-button {
+            display: inline-block;
+            background-color: #1f2937;
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .nav-button:hover {
+            background-color: #374151;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body class="bg-gray-900 text-white p-8">
-    <h1 class="text-3xl font-bold text-blue-400 mb-6">Admin Dashboard</h1>
-    <div class="space-y-4">
-        <a href="edit-resume.html" class="block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Update Resume</a>
-        <a href="edit-projects.html" class="block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Update Existing Projects</a>
-        <a href="add-project.html" class="block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Add New Project</a>
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-blue-400 mb-6">Admin Dashboard</h1>
+
+        <!-- Navigation buttons -->
+        <div class="mb-4">
+            <a href="index.html" class="nav-button">Home</a>
+            <a href="admin-dashboard.html" class="nav-button">Dashboard</a>
+        </div>
+
+        <!-- Admin Options -->
+        <div class="admin-box">
+            <a href="edit-resume.html">
+                <h3 class="text-xl font-bold text-blue-300 mb-2">Edit Resume</h3>
+                <p>Make changes to your resume, including updating your summary, experience, and skills.</p>
+            </a>
+        </div>
+        
+        <div class="admin-box">
+            <a href="edit-projects.html">
+                <h3 class="text-xl font-bold text-blue-300 mb-2">Edit Existing Projects</h3>
+                <p>Modify details of your existing projects, including titles, images, and descriptions.</p>
+            </a>
+        </div>
+        
+        <div class="admin-box">
+            <a href="add-project.html">
+                <h3 class="text-xl font-bold text-blue-300 mb-2">Create New Project</h3>
+                <p>Add new projects to your portfolio by entering details like title, image URL, and description.</p>
+            </a>
+        </div>
     </div>
 </body>
 </html>

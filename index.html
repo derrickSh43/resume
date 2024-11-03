@@ -12,17 +12,28 @@
             background-position: center;
             background-repeat: no-repeat;
             color: white;
+            font-family: 'Arial', sans-serif;
         }
-        .category-box {
+        .category-box, .featured-box {
             border-radius: 8px;
             padding: 20px;
             background-color: rgba(55, 65, 81, 0.8);
+            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+        .category-box:hover, .featured-box:hover {
+            background-color: rgba(75, 85, 99, 0.9); /* Slightly lighter shade */
+            transform: scale(1.03);
         }
         .profile-img {
             width: 150px;
             height: 150px;
             border-radius: 50%;
             margin-right: 20px;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -54,29 +65,45 @@
         <!-- Featured Projects -->
         <section id="featured-projects" class="mb-8">
             <h2 class="text-2xl font-semibold text-blue-400 mb-4">Featured Projects</h2>
-            <div id="portfolio-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <!-- Featured project tiles will be loaded from localStorage -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <a href="project-details.html?projectIndex=0" class="featured-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">Project Alpha</h3>
+                    <p>A cutting-edge infrastructure automation project utilizing Terraform and AWS.</p>
+                </a>
+                <a href="project-details.html?projectIndex=1" class="featured-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">Project Beta</h3>
+                    <p>Comprehensive CI/CD pipeline implementation for seamless software deployment.</p>
+                </a>
+                <a href="project-details.html?projectIndex=2" class="featured-box">
+                    <h3 class="text-xl font-bold text-blue-300 mb-2">Project Gamma</h3>
+                    <p>AI-driven cloud integration project enhancing data processing efficiency.</p>
+                </a>
             </div>
         </section>
 
-        <!-- Project Categories -->
-        <section id="categories" class="mb-8">
-            <h2 class="text-2xl font-semibold text-blue-400 mb-4">Project Categories</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <div class="category-box">
-                    <h3 class="text-xl font-bold text-blue-300 mb-2">Terraform</h3>
-                    <p>Infrastructure as code projects involving provisioning and management of cloud resources.</p>
-                </div>
-                <div class="category-box">
-                    <h3 class="text-xl font-bold text-blue-300 mb-2">CI/CD</h3>
-                    <p>Automated pipeline projects involving continuous integration and delivery of software.</p>
-                </div>
-                <div class="category-box">
-                    <h3 class="text-xl font-bold text-blue-300 mb-2">AI</h3>
-                    <p>Machine learning and artificial intelligence integration into cloud environments.</p>
-                </div>
-            </div>
-        </section>
+<!-- Project Categories Section -->
+<section id="categories" class="mb-8">
+    <h2 class="text-2xl font-semibold text-blue-400 mb-4">Project Categories</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <a href="all-projects.html?category=terraform" class="category-box">
+            <h3 class="text-xl font-bold text-blue-300 mb-2">Terraform</h3>
+            <p>Infrastructure as code projects involving provisioning and management of cloud resources.</p>
+        </a>
+        <a href="all-projects.html?category=ci-cd" class="category-box">
+            <h3 class="text-xl font-bold text-blue-300 mb-2">CI/CD</h3>
+            <p>Automated pipeline projects involving continuous integration and delivery of software.</p>
+        </a>
+        <a href="all-projects.html?category=ai" class="category-box">
+            <h3 class="text-xl font-bold text-blue-300 mb-2">AI</h3>
+            <p>Machine learning and artificial intelligence integration into cloud environments.</p>
+        </a>
+        <a href="all-projects.html" class="category-box">
+            <h3 class="text-xl font-bold text-blue-300 mb-2">More</h3>
+            <p>Explore all other projects and categories.</p>
+        </a>
+    </div>
+</section>
+
 
         <!-- Footer with copyright -->
         <footer class="text-center text-gray-400 mt-8">

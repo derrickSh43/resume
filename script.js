@@ -53,6 +53,37 @@ function loadProjectDetails() {
         document.getElementById("project-details").innerHTML = '<p>Project not found.</p>';
     }
 }
+function checkFeaturedLimit() {
+    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    const featuredCount = projects.filter(project => project.featured).length;
+
+    if (featuredCount >= 3 && !document.getElementById("edit-feature").checked) {
+        alert("Only three projects can be featured at a time.");
+        document.getElementById("edit-feature").checked = false;
+    }
+}
+
+function saveEditedProject(index) {
+    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    const currentProject = projects[index];
+
+    currentProject.title = tinymce.get("edit-title").getContent();
+    currentProject.image = tinymce.get("edit-image").getContent();
+    currentProject.description = tinymce.get("edit-description").getContent();
+    currentProject.category = document.getElementById("edit-category").value;
+    currentProject.featured = document.getElementById("edit-feature").checked;
+
+    const featuredCount = projects.filter(project => project.featured).length;
+    if (currentProject.featured && featuredCount > 3) {
+        alert("You cannot have more than three featured projects.");
+        currentProject.featured = false;
+    }
+
+    localStorage.setItem("projects", JSON.stringify(projects));
+    alert("Project updated successfully!");
+    document.getElementById("project-select").value = "";
+    document.getElementById("project-details-container").innerHTML = '';
+}
 
 // Add event listener to load content when the page is loaded
 document.addEventListener("DOMContentLoaded", loadContent);

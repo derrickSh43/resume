@@ -6,77 +6,161 @@
     <title>Edit Projects</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.tiny.cloud/1/cnrri5xeiggmx4gxz254ocnoc78pwyb719mo85wzvjiun7g9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <style>
+        body {
+            background-color: #1a202c; /* Dark background */
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+        .admin-box {
+            border-radius: 8px;
+            padding: 20px;
+            background-color: rgba(55, 65, 81, 0.8);
+            transition: background-color 0.3s, transform 0.3s;
+            margin-bottom: 15px;
+        }
+        .admin-box:hover {
+            background-color: rgba(75, 85, 99, 0.9);
+            transform: scale(1.03);
+        }
+        .nav-button {
+            display: inline-block;
+            background-color: #1f2937;
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .nav-button:hover {
+            background-color: #374151;
+        }
+    </style>
 </head>
 <body class="bg-gray-900 text-white p-8">
-    <div class="editor-container max-w-4xl mx-auto bg-gray-800 p-6 rounded-md shadow-md">
-        <h1 class="text-3xl font-bold text-blue-400 mb-4">Edit Projects</h1>
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-blue-400 mb-6">Edit Projects</h1>
 
-        <!-- Search Input -->
-        <label class="block mb-2">Search Project</label>
-        <input type="text" id="search-input" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" placeholder="Enter project title..." oninput="filterProjects()">
-
-        <!-- Project List to Edit -->
-        <div id="project-list" class="space-y-4">
-            <!-- Project edit forms will be dynamically loaded here -->
+        <!-- Navigation buttons -->
+        <div class="mb-4">
+            <a href="index.html" class="nav-button">Home</a>
+            <a href="admin-dashboard.html" class="nav-button">Dashboard</a>
         </div>
+
+        <!-- Project Selection Dropdown -->
+        <label for="project-select" class="block mb-2">Select a Project to Edit</label>
+        <select id="project-select" class="w-full mb-4 p-2 rounded bg-gray-700 text-white" onchange="loadProjectDetails()">
+            <option value="">Select a project...</option>
+            <!-- Project options will be dynamically loaded -->
+        </select>
+
+        <!-- Edit Button -->
+        <button id="edit-button" onclick="editProject()" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-2">Edit Selected Project</button>
+
+        <!-- Placeholder for project editing -->
+        <div id="project-details-container" class="mt-4"></div>
     </div>
 
     <script>
-        tinymce.init({ selector: 'textarea' });
-
-        // Load projects from localStorage
-        function loadProjects() {
+        // Load projects into the dropdown
+        document.addEventListener("DOMContentLoaded", function () {
             const projects = JSON.parse(localStorage.getItem("projects")) || [];
-            const projectList = document.getElementById("project-list");
-            projectList.innerHTML = projects.map((project, index) => `
-                <div class="bg-gray-700 p-4 rounded-md shadow-md">
-                    <h3 class="text-lg font-bold text-blue-300 mb-2">${project.title}</h3>
-                    <textarea id="edit-title-${index}" class="w-full mb-2 p-2 rounded">${project.title}</textarea>
-                    <textarea id="edit-image-${index}" class="w-full mb-2 p-2 rounded">${project.image}</textarea>
-                    <textarea id="edit-description-${index}" class="w-full mb-2 p-2 rounded">${project.description}</textarea>
-                    <label class="flex items-center">
-                        <input type="checkbox" id="edit-feature-${index}" class="mr-2" ${project.featured ? 'checked' : ''}> Featured
-                    </label>
-                    <button onclick="saveEditedProject(${index})" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-2">Save Changes</button>
-                </div>
-            `).join("");
+            const projectSelect = document.getElementById("project-select");
+            projects.forEach((project, index) => {
+                const option = document.createElement("option");
+                option.value = index;
+                option.textContent = project.title;
+                projectSelect.appendChild(option);
+            });
+        });
+
+        function loadProjectDetails() {
+            const projectIndex = document.getElementById("project-select").value;
+            const projects = JSON.parse(localStorage.getItem("projects")) || [];
+
+            if (projectIndex !== "") {
+                const project = projects[projectIndex];
+                document.getElementById("project-details-container").innerHTML = `
+                    <div class="admin-box">
+                        <h3 class="text-lg font-bold text-blue-300 mb-2">Edit Project: ${project.title}</h3>
+                        <label class="block mb-2">Project Title</label>
+                        <textarea id="edit-title" class="w-full mb-2 p-2 rounded">${project.title}</textarea>
+                        
+                        <label class="block mb-2">Project Image URL</label>
+                        <textarea id="edit-image" class="w-full mb-2 p-2 rounded">${project.image}</textarea>
+                        
+                        <label class="block mb-2">Project Description</label>
+                        <textarea id="edit-description" class="w-full mb-2 p-2 rounded">${project.description}</textarea>
+                        
+                        <label class="block mb-2">Category</label>
+                        <select id="edit-category" class="w-full mb-2 p-2 rounded bg-gray-700 text-white">
+                            <option value="terraform" ${project.category === 'terraform' ? 'selected' : ''}>Terraform</option>
+                            <option value="ci-cd" ${project.category === 'ci-cd' ? 'selected' : ''}>CI/CD</option>
+                            <option value="ai" ${project.category === 'ai' ? 'selected' : ''}>AI</option>
+                            <option value="other" ${project.category === 'other' ? 'selected' : ''}>Other</option>
+                        </select>
+
+                        <label class="flex items-center">
+                            <input type="checkbox" id="edit-feature" class="mr-2" ${project.featured ? 'checked' : ''} onchange="checkFeaturedLimit()"> Featured
+                        </label>
+                        <button onclick="saveEditedProject(${projectIndex})" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-2">Save Changes</button>
+                    </div>
+                `;
+
+                // Initialize TinyMCE for the loaded textareas
+                tinymce.init({
+                    selector: '#edit-title, #edit-image, #edit-description',
+                    plugins: ['link image code'],
+                    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
+                    menubar: false,
+                    height: 200
+                });
+            } else {
+                document.getElementById("project-details-container").innerHTML = '';
+            }
         }
 
-        // Filter projects by search input
-        function filterProjects() {
-            const searchInput = document.getElementById("search-input").value.toLowerCase();
+        function checkFeaturedLimit() {
             const projects = JSON.parse(localStorage.getItem("projects")) || [];
-            const filteredProjects = projects.filter(project => project.title.toLowerCase().includes(searchInput));
-            const projectList = document.getElementById("project-list");
-            projectList.innerHTML = filteredProjects.map((project, index) => `
-                <div class="bg-gray-700 p-4 rounded-md shadow-md">
-                    <h3 class="text-lg font-bold text-blue-300 mb-2">${project.title}</h3>
-                    <textarea id="edit-title-${index}" class="w-full mb-2 p-2 rounded">${project.title}</textarea>
-                    <textarea id="edit-image-${index}" class="w-full mb-2 p-2 rounded">${project.image}</textarea>
-                    <textarea id="edit-description-${index}" class="w-full mb-2 p-2 rounded">${project.description}</textarea>
-                    <label class="flex items-center">
-                        <input type="checkbox" id="edit-feature-${index}" class="mr-2" ${project.featured ? 'checked' : ''}> Featured
-                    </label>
-                    <button onclick="saveEditedProject(${index})" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-2">Save Changes</button>
-                </div>
-            `).join("");
+            const featuredCount = projects.filter(project => project.featured).length;
+
+            if (featuredCount >= 3 && !document.getElementById("edit-feature").checked) {
+                alert("Only three projects can be featured at a time.");
+                document.getElementById("edit-feature").checked = false;
+            }
         }
 
-        // Save the edited project back to localStorage
         function saveEditedProject(index) {
             const projects = JSON.parse(localStorage.getItem("projects")) || [];
-            projects[index].title = tinymce.get(`edit-title-${index}`).getContent();
-            projects[index].image = tinymce.get(`edit-image-${index}`).getContent();
-            projects[index].description = tinymce.get(`edit-description-${index}`).getContent();
-            projects[index].featured = document.getElementById(`edit-feature-${index}`).checked;
+            const currentProject = projects[index];
+
+            currentProject.title = tinymce.get("edit-title").getContent();
+            currentProject.image = tinymce.get("edit-image").getContent();
+            currentProject.description = tinymce.get("edit-description").getContent();
+            currentProject.category = document.getElementById("edit-category").value;
+            currentProject.featured = document.getElementById("edit-feature").checked;
+
+            const featuredCount = projects.filter(project => project.featured).length;
+            if (currentProject.featured && featuredCount > 3) {
+                alert("You cannot have more than three featured projects.");
+                currentProject.featured = false;
+            }
 
             localStorage.setItem("projects", JSON.stringify(projects));
             alert("Project updated successfully!");
-            loadProjects(); // Reload the projects to reflect updates
+            document.getElementById("project-select").value = "";
+            document.getElementById("project-details-container").innerHTML = '';
         }
 
-        // Load projects on page load
-        document.addEventListener("DOMContentLoaded", loadProjects);
+        function editProject() {
+            const projectIndex = document.getElementById("project-select").value;
+            if (projectIndex !== "") {
+                loadProjectDetails();
+            } else {
+                alert("Please select a project to edit.");
+            }
+        }
     </script>
 </body>
 </html>

@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Project</title>
+    <title>Create New Project</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tiny.cloud/1/cnrri5xeiggmx4gxz254ocnoc78pwyb719mo85wzvjiun7g9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <style>
         body {
             background-color: #1a202c; /* Dark background */
@@ -23,6 +24,12 @@
         }
         .nav-button:hover {
             background-color: #374151;
+        }
+        .admin-box {
+            border-radius: 8px;
+            padding: 20px;
+            background-color: rgba(55, 65, 81, 0.8);
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -47,30 +54,65 @@
             <label class="block mb-2">Project Description</label>
             <textarea id="project-description" class="w-full mb-4 p-2 rounded"></textarea>
 
-            <button onclick="saveNewProject()" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Save Project</button>
+            <label class="block mb-2">Category</label>
+            <select id="project-category" class="w-full mb-4 p-2 rounded bg-gray-700 text-white">
+                <option value="terraform">Terraform</option>
+                <option value="ci-cd">CI/CD</option>
+                <option value="ai">AI</option>
+                <option value="other">Other</option>
+            </select>
+
+            <label class="flex items-center">
+                <input type="checkbox" id="project-feature" class="mr-2" onchange="checkFeaturedLimit()"> Featured
+            </label>
+
+            <button onclick="saveNewProject()" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 mt-4">Save Project</button>
         </div>
     </div>
 
-    <script src="https://cdn.tiny.cloud/1/cnrri5xeiggmx4gxz254ocnoc78pwyb719mo85wzvjiun7g9/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         tinymce.init({
-            selector: 'textarea',
+            selector: '#project-title, #project-image, #project-description',
             plugins: ['link image code'],
             toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
             menubar: false,
             height: 200
         });
 
+        function checkFeaturedLimit() {
+            const projects = JSON.parse(localStorage.getItem("projects")) || [];
+            const featuredCount = projects.filter(project => project.featured).length;
+
+            if (featuredCount >= 3 && document.getElementById("project-feature").checked) {
+                alert("Only three projects can be featured at a time.");
+                document.getElementById("project-feature").checked = false;
+            }
+        }
+
         function saveNewProject() {
             const title = tinymce.get("project-title").getContent();
             const image = tinymce.get("project-image").getContent();
             const description = tinymce.get("project-description").getContent();
-            
-            const projectData = { title, image, description };
+            const category = document.getElementById("project-category").value;
+            const featured = document.getElementById("project-feature").checked;
+
+            const projectData = { title, image, description, category, featured };
             let projects = JSON.parse(localStorage.getItem("projects")) || [];
+
+            const featuredCount = projects.filter(project => project.featured).length;
+            if (featured && featuredCount >= 3) {
+                alert("You cannot have more than three featured projects.");
+                return;
+            }
+
             projects.push(projectData);
             localStorage.setItem("projects", JSON.stringify(projects));
             alert("Project created successfully!");
+            document.getElementById("project-title").value = '';
+            document.getElementById("project-image").value = '';
+            document.getElementById("project-description").value = '';
+            document.getElementById("project-category").value = 'other';
+            document.getElementById("project-feature").checked = false;
         }
     </script>
 </body>
