@@ -107,18 +107,48 @@
 <!-- Contact Form Section -->
 <section id="contact" class="mb-8">
     <h2 class="text-2xl font-semibold text-blue-400 mb-4">Contact Me</h2>
-    <form action="mailto:your-email@example.com" method="post" enctype="text/plain" class="decor bg-gray-800 p-6 rounded-md shadow">
-        <div class="form-left-decoration"></div>
-        <div class="form-right-decoration"></div>
-        <div class="circle"></div>
+    <form id="contact-form" class="decor bg-gray-800 p-6 rounded-md shadow">
         <div class="form-inner">
-            <input type="text" placeholder="Name" name="name" class="w-full mb-4 p-3 rounded bg-gray-700 text-white" required>
-            <input type="email" placeholder="Email" name="email" class="w-full mb-4 p-3 rounded bg-gray-700 text-white" required>
-            <textarea placeholder="Message..." name="message" rows="5" class="w-full mb-4 p-3 rounded bg-gray-700 text-white" required></textarea>
+            <input type="text" id="name" name="name" placeholder="Name" class="w-full mb-4 p-3 rounded bg-gray-700 text-white" required>
+            <input type="email" id="email" name="email" placeholder="Email" class="w-full mb-4 p-3 rounded bg-gray-700 text-white" required>
+            <textarea id="message" name="message" placeholder="Message..." rows="5" class="w-full mb-4 p-3 rounded bg-gray-700 text-white" required></textarea>
             <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Send</button>
         </div>
     </form>
+    <p id="form-status" class="mt-4 text-center text-green-400 hidden">Your message has been sent successfully!</p>
+    <p id="form-error" class="mt-4 text-center text-red-400 hidden">There was an error sending your message. Please try again.</p>
 </section>
+
+<script>
+    document.getElementById('contact-form')?.addEventListener('submit', async function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+        const formStatus = document.getElementById('form-status');
+        const formError = document.getElementById('form-error');
+
+        // Basic client-side validation
+        if (!name || !email || !message) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        try {
+            // Simulate form submission for demonstration purposes
+            // Replace this with your actual form submission logic, such as an API call
+            formStatus.classList.remove('hidden');
+            formError.classList.add('hidden');
+            this.reset(); // Clear the form after successful submission
+        } catch (error) {
+            console.error('Error:', error);
+            formError.classList.remove('hidden');
+            formStatus.classList.add('hidden');
+        }
+    });
+</script>
+
 
 <!-- Style Adjustments for Contact Form -->
 <style>
@@ -182,5 +212,19 @@
             <p>&copy; 2024 Derrick Weil. All rights reserved.</p>
         </footer>
     </div>
+        <!-- Load AWS Amplify Library -->
+        <script src="https://unpkg.com/aws-amplify@latest"></script>
+
+        <!-- Amplify Configuration Script -->
+        <script type="module">
+            import { Amplify } from 'aws-amplify';
+            import amplifyconfig from './amplifyconfiguration.json'; // Adjust the path if needed
+    
+            // Configure Amplify
+            Amplify.configure(amplifyconfig);
+        </script>
+    
+        <!-- Link to your existing script.js -->
+        <script src="path/to/your/script.js"></script>
 </body>
 </html>

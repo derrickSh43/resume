@@ -14,9 +14,9 @@ exports.handler = async (event: any) => {
     }
 
     const emailParams = {
-      Source: 'your-verified-email@example.com', // Replace with your verified email
+      Source: 'derrick.weil@hotmail.com', // Replace with your verified email
       Destination: {
-        ToAddresses: ['recipient-email@example.com'], // Replace with your recipient email
+        ToAddresses: ['derrick.weil@hotmail.com'], // Replace with your recipient email
       },
       Message: {
         Subject: {
