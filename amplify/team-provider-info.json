@@ -28,11 +28,8 @@
       "function": {
         "contactformfunction": {
           "deploymentBucketName": "amplify-website-resume-ece66-deployment",
-          "s3Key": "amplify-builds/contactformfunction-44546f6e4b67756f782f-build.zip"
+          "s3Key": "amplify-builds/contactformfunction-4d586d3664594c564e42-build.zip"
         }
-      },
-      "api": {
-        "resume": {}
       }
     }
   }
