@@ -1,10 +1,3 @@
-// Import Amplify from AWS Amplify library
-import { Amplify } from 'aws-amplify';
-// Import the Amplify configuration file
-import amplifyconfig from './amplifyconfiguration.json'; // Adjust path as needed
-
-// Configure Amplify with your configuration
-Amplify.configure(amplifyconfig);
 
 // Your existing JavaScript code starts here...
 
@@ -137,15 +130,6 @@ document.getElementById('contact-form')?.addEventListener('submit', async functi
         alert('An error occurred. Please try again.');
     }
 });
-// Sample backend logic for reCAPTCHA validation (Node.js example)
-const axios = require('axios');
-const verifyReCAPTCHA = async (recaptchaToken) => {
-    const secretKey = 'your-recaptcha-secret-key'; // Replace with your secret key
-    const response = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
-        params: {
-            secret: secretKey,
-            response: recaptchaToken
-        }
-    });
-    return response.data.success;
-};
+
+
+

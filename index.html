@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Derrick's Portfolio</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';">
+    
+
+           <!-- Other head content -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/amazon-cognito-identity-js/6.3.1/amazon-cognito-identity.min.js"></script>
+        <!-- Update your Content-Security-Policy to allow these scripts -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' *.amazonaws.com *.amazoncognito.com; script-src 'self' 'unsafe-inline' https://sdk.amazonaws.com https://cdnjs.cloudflare.com; img-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;">
+
     <style>
         body {
             background-image: url('background.jpg');
@@ -60,11 +67,14 @@
     </style>
 </head>
 <body>
+    
     <div class="max-w-6xl mx-auto p-4">
-        <!-- Login button -->
-        <div class="flex justify-end mb-4">
-            <a href="login.html" class="text-blue-500 hover:text-blue-700" rel="noopener noreferrer">Login</a>
-        </div>
+    <!-- Login button -->
+    <div class="flex justify-end mb-4">
+        <button id="googleLoginButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Sign in with Google
+        </button>
+    </div>
 
         <!-- Header with Profile Image -->
         <header class="flex items-center mb-8">
@@ -176,19 +186,96 @@
             <p>&copy; 2024 Derrick Weil. All rights reserved.</p>
         </footer>
     </div>
-        <!-- Load AWS Amplify Library -->
-        <script src="https://unpkg.com/aws-amplify@latest"></script>
-
-        <!-- Amplify Configuration Script -->
-        <script type="module">
-            import { Amplify } from 'aws-amplify';
-            import amplifyconfig from './amplifyconfiguration.json'; // Adjust the path if needed
-    
-            // Configure Amplify
-            Amplify.configure(amplifyconfig);
-        </script>
+      
+        
     
         <!-- Link to your existing script.js -->
-        <script src="path/to/your/script.js"></script>
+        <script src="script.js"></script>
+        <!-- Add this before closing body tag -->
+        <script>
+            // Initialize AWS Cognito
+            const poolData = {
+                UserPoolId: 'us-east-1_wZJDfFeRV',
+                ClientId: '3behb9georvond8dtc898u5sdl'
+            };
+        
+            // Define these variables globally
+            const redirectUri = 'https://derrick-weil.com/admin-dashboard.html';
+            const cognitoClientId = '3behb9georvond8dtc898u5sdl'; // Use your Cognito App Client ID here
+            const cognitoDomain = 'derrick-weil.auth.us-east-1.amazoncognito.com';
+        
+            // Remove this line as we're not using it directly
+            // const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+        
+            // Function to handle Google login
+            document.getElementById('googleLoginButton').onclick = function() {
+                googleLogin();
+            };
+        
+            function googleLogin() {
+                // Add loading state to button
+                const button = document.getElementById('googleLoginButton');
+                button.disabled = true;
+                button.innerHTML = 'Loading...';
+            
+                try {
+                    // Construct the authorization URL using Cognito Client ID (not Google Client ID)
+                    const authUrl = `https://${cognitoDomain}/oauth2/authorize?` +
+                        `response_type=code&` +
+                        `client_id=${cognitoClientId}&` +
+                        `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+                        `identity_provider=Google&` +
+                        `scope=${encodeURIComponent('openid email profile')}`;
+            
+                    window.location.href = authUrl;
+                } catch (error) {
+                    console.error('Error initiating login:', error);
+                    button.disabled = false;
+                    button.innerHTML = 'Sign in with Google';
+                    alert('Failed to initiate login. Please try again.');
+                }
+            }
+        
+            // Function to handle the callback after Google login
+            function handleCallback() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+        
+                if (code) {
+                    const tokenUrl = `https://${cognitoDomain}/oauth2/token`;
+                    const params = new URLSearchParams();
+                    params.append('grant_type', 'authorization_code');
+                    params.append('client_id', cognitoClientId);
+                    params.append('code', code);
+                    params.append('redirect_uri', redirectUri);
+        
+                    fetch(tokenUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: params
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Login successful:', data);
+                        // Store the tokens
+                        localStorage.setItem('accessToken', data.access_token);
+                        localStorage.setItem('idToken', data.id_token);
+                        // Redirect to dashboard
+                        window.location.href = '/admin-dashboard.html';
+                    })
+                    .catch(error => {
+                        console.error('Login error:', error);
+                        alert('Login failed. Please try again.');
+                    });
+                }
+            }
+        
+            // Check for callback on page load
+            if (window.location.search.includes('code=')) {
+                handleCallback();
+            }
+        </script>
 </body>
 </html>

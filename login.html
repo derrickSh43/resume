@@ -3,85 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Load AWS Amplify SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/aws-amplify@latest/dist/aws-amplify.min.js"></script>
-    <style>
-        body {
-            background-color: #1a202c;
-            color: white;
-            font-family: 'Arial', sans-serif;
-        }
-        .login-container {
-            max-width: 400px;
-            margin: auto;
-            margin-top: 10%;
-            background-color: rgba(55, 65, 81, 0.9);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-    </style>
+    <title>Google Federated Login with Cognito</title>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
-<body>
-    <div class="login-container">
-        <h1 class="text-2xl font-bold text-blue-400 mb-4">Login</h1>
-        <button id="google-signin-button" class="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700">
-            Sign in with Google
-        </button>
-        <p id="login-status" class="mt-4 text-red-500"></p>
-    </div>
+<body onload="onLoad()">
 
-    <script type="module">
-        import { Authenticator } from '@aws-amplify/ui-react';
-import { Amplify } from 'aws-amplify';
-import '@aws-amplify/ui-react/styles.css';
-import outputs from "../amplify_outputs.json";
+    <div id="my-signin2"></div>
 
-Amplify.configure(outputs);
 
-export default function App() {
-  return (
-    <Authenticator>
-      {({ signOut, user }) => (
-        <main>
-          <h1>Hello {user?.username}</h1>
-          <button onClick={signOut}>Sign out</button>
-        </main>
-      )}
-    </Authenticator>
-  );
-}
-
-        // Configure Amplify with Cognito
-        Amplify.configure({
-            Auth: {
-                region: 'us-east-1', // Replace with your AWS region
-                userPoolId: 'us-east-1_91ty2Mu0Q', // Replace with your Cognito User Pool ID
-                userPoolWebClientId: '6s2ql3g8ddne8j46janh1a768q', // Replace with your User Pool Client ID
-                identityPoolId: 'us-east-1:8a251cbd-3ab7-4996-8cea-13600df8a4a7', // Replace with your Identity Pool ID
-                oauth: {
-                    domain: 'https://derrick-weil.auth.us-east-1.amazoncognito.com', // Replace with your Cognito domain
-                    scope: ['openid', 'email', 'profile'],
-                    redirectSignIn: 'https://derrick-weil.com/callback', // Your allowed callback URL
-                    redirectSignOut: 'https://derrick-weil.com/',
-                    responseType: 'code', // or 'token', depending on your app's requirements
-                }
+        <script>
+            // Initialize AWS Cognito
+            const poolData = {
+                UserPoolId: 'us-east-1_wZJDfFeRV', // Your user pool id here
+                ClientId: '3behb9georvond8dtc898u5sdl' // Your client id here
+            };
+        
+            const userPool = new AmazonCognitoIdentity.CognitoUser Pool(poolData);
+        
+            // Function to handle Google login
+            document.getElementById('googleLoginButton').onclick = function() {
+                googleLogin();
+            };
+        
+            function googleLogin() {
+                const redirectUri = 'https://derrick-weil.com/admin-dashboard.html'; // Your redirect URI
+                const clientId = '873559428542-mvrum546a576j6hbbu5rop0sc874iilj.apps.googleusercontent.com'; // Your client ID
+        
+                // Construct the authorization URL
+                const authUrl = `https:derrick-weil.auth.us-east-1.auth.us-east-1.amazoncognito.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=openid profile`;
+        
+                // Redirect to the authorization URL
+                window.location.href = authUrl;
             }
-        });
-
-        // Handle Google Sign-In button click
-        document.getElementById('google-signin-button').addEventListener('click', () => {
-            Amplify.Auth.federatedSignIn({ provider: 'Google' });
-            try {
-                Amplify.Auth.federatedSignIn({ provider: 'Google' });
-                console.log('Federated sign-in initiated');
-            } catch (error) {
-                console.error('Error initiating federated sign-in:', error);
-                document.getElementById('login-status').textContent = 'Error: ' + error.message;
+        
+            // Function to handle the callback after Google login
+            function handleCallback() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code'); // Get the authorization code from the URL
+        
+                // Exchange the authorization code for tokens
+                const tokenUrl = `https://<your_cognito_domain>.auth.us-east-1.amazoncognito.com/oauth2/token`;
+                const params = new URLSearchParams();
+                params.append('grant_type', 'authorization_code');
+                params.append('client_id', clientId);
+                params.append('code', code);
+                params.append('redirect_uri', redirectUri);
+        
+                fetch(tokenUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: params
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Tokens:', data); // Handle the tokens here
+                })
+                .catch(error => {
+                    console.error('Error exchanging code for tokens:', error);
+                });
             }
-        });
-    </script>
+        
+            // Call the handleCallback function if the page is loaded with a code
+            if (window.location.search.includes('code=')) {
+                handleCallback();
+            }
+        </script>
 </body>
 </html>
